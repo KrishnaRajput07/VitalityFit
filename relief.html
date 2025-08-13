@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exercise Detail & Camera Tracker - Vitality Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom spacing and layout enhancements */
+    .desired-space > * + * {
+      margin-top: 1.5rem; /* generous vertical spacing */
+    }
+    /* Fixed height for camera video */
+    #camera-video {
+      width: 100%;
+      height: 300px;
+      background: #000;
+      border-radius: 0.75rem;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="index.html" class="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+        <i class="text-emerald-500" data-lucide="heart"></i>
+        <span>Vitality Hub</span>
+      </a>
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+        <a href="exercise.html" class="nav-link font-bold text-emerald-700 flex items-center space-x-1">
+          <i data-lucide="activity" class="h-4 w-4"></i>
+          <span>Exercise</span>
+        </a>
+        <a href="nutrition.html" class="nav-link">Nutrition</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="index.html#contact-section" class="nav-link">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+    <!-- Exercise Info (2/3 width) -->
+    <section class="lg:col-span-2 bg-white rounded-2xl shadow p-8 desired-space">
+      <h1 class="text-3xl font-extrabold text-gray-900">Push Ups</h1>
+      <p class="text-gray-700 text-lg">Type: Strength</p>
+      <p class="text-gray-700 text-lg">Muscle Group: Chest, Triceps</p>
+      <p class="text-gray-700 text-lg">Difficulty: Beginner</p>
+
+      <h2 class="mt-6 text-2xl font-semibold text-gray-900">Description</h2>
+      <p class="text-gray-600 leading-relaxed">
+        Push-ups are a classic exercise to strengthen the chest, shoulders, and triceps.  
+        Keep your body straight, core engaged, and lower yourself until your chest nearly touches the floor.
+      </p>
+
+      <h2 class="mt-6 text-2xl font-semibold text-gray-900">Instructions</h2>
+      <ol class="list-decimal list-inside text-gray-600 leading-relaxed space-y-2">
+        <li>Start in a plank position with hands shoulder-width apart.</li>
+        <li>Lower your body until your chest almost touches the floor.</li>
+        <li>Push yourself back up to the starting position.</li>
+        <li>Keep your core tight and body straight throughout.</li>
+      </ol>
+    </section>
+
+    <!-- Camera & Tracker (1/3 width) -->
+    <section class="bg-white rounded-2xl shadow p-8 flex flex-col items-center desired-space">
+
+      <!-- Camera Preview -->
+      <video id="camera-video" autoplay muted></video>
+
+      <!-- Controls -->
+      <div class="flex space-x-4 w-full justify-center">
+        <button id="start-camera-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-5 rounded transition">
+          Start Camera
+        </button>
+        <button id="stop-exercise-btn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-5 rounded transition">
+          Stop Exercise
+        </button>
+      </div>
+
+      <!-- Counters -->
+      <div class="w-full mt-6 grid grid-cols-2 gap-6 text-center">
+        <div class="bg-gray-100 rounded-lg p-4">
+          <div class="text-sm text-gray-500">Reps Counted</div>
+          <div id="reps-count" class="text-3xl font-bold text-emerald-600">0</div>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4">
+          <div class="text-sm text-gray-500">Calories Burned</div>
+          <div id="calories-burned" class="text-3xl font-bold text-emerald-600">0 kcal</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Feedback Section (full width below) -->
+  </main>
+
+  <section class="max-w-7xl mx-auto px-4 py-8 bg-white rounded-2xl shadow desired-space">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-900">Exercise Feedback</h2>
+    <p id="exercise-feedback" class="text-gray-700 leading-relaxed min-h-[72px]">
+      No feedback available yet. Perform the exercise and stop to see insights here.
+    </p>
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+
+    // Placeholder elements
+    const cameraVideo = document.getElementById('camera-video');
+    const startCameraBtn = document.getElementById('start-camera-btn');
+    const stopExerciseBtn = document.getElementById('stop-exercise-btn');
+    const repsCountEl = document.getElementById('reps-count');
+    const caloriesBurnedEl = document.getElementById('calories-burned');
+    const feedbackEl = document.getElementById('exercise-feedback');
+
+    let reps = 0;
+    let calories = 0;
+    let exerciseActive = false;
+    let cameraStream;
+
+    // Start camera: request video from user media and stream to video element
+    startCameraBtn.addEventListener('click', async () => {
+      if (exerciseActive) return;
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraVideo.srcObject = cameraStream;
+        exerciseActive = true;
+        reps = 0;
+        calories = 0;
+        repsCountEl.textContent = reps;
+        caloriesBurnedEl.textContent = `${calories} kcal`;
+        feedbackEl.textContent = 'Exercise started. Perform your reps!';
+        // Simulate rep counting every 3 seconds (placeholder)
+        startRepSimulation();
+      } catch (err) {
+        alert('Unable to access camera. Please allow permission.');
+      }
+    });
+
+    // Stop exercise & camera stream
+    stopExerciseBtn.addEventListener('click', () => {
+      if (!exerciseActive) return;
+      exerciseActive = false;
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraVideo.srcObject = null;
+      }
+      feedbackEl.textContent = `Exercise stopped. You completed ${reps} reps and burned approx. ${calories} kcal. Great job! Keep it up for your fitness goals!`;
+      stopRepSimulation();
+    });
+
+    // Simple rep simulation: increase reps and calories periodically
+    let repInterval;
+    function startRepSimulation() {
+      repInterval = setInterval(() => {
+        if (!exerciseActive) return;
+        reps++;
+        calories = Math.round(reps * 0.5); // e.g., 0.5 calories per rep as demo
+        repsCountEl.textContent = reps;
+        caloriesBurnedEl.textContent = `${calories} kcal`;
+      }, 3000);
+    }
+    function stopRepSimulation() {
+      clearInterval(repInterval);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Login - Vitality Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+    <div class="flex items-center justify-center mb-6">
+      <div class="bg-emerald-500 p-3 rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+        </svg>
+      </div>
+      <span class="ml-3 text-2xl font-bold text-gray-800">Vitality Hub</span>
+    </div>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+    <form id="login-form" class="space-y-4">
+      <input type="email" placeholder="Email" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" required/>
+      <input type="password" placeholder="Password" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" required/>
+      <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-lg font-semibold transition">Login</button>
+    </form>
+    <p class="mt-4 text-center text-gray-600">No account? <a href="register.html" class="text-emerald-500 hover:underline">Register</a></p>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e){
+      e.preventDefault();
+      // Here you would add real authentication logic
+      window.location.href = "index.html"; // Redirect to landing page
+    });
+  </script>
+</body>
+</html>

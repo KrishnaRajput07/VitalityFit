@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Profile - Vitality Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="index.html" class="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+        </svg>
+        <span>Vitality Hub</span>
+      </a>
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="profile.html" class="nav-link font-bold text-emerald-700">Profile</a>
+        <a href="exercise.html" class="nav-link">Exercise</a>
+        <a href="nutrition.html" class="nav-link">Nutrition</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="index.html#contact-section" class="nav-link">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-20 pb-24 max-w-2xl mx-auto px-4">
+    <!-- Profile Card -->
+    <section class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+      <div class="flex items-center mb-8">
+        <img src="https://randomuser.me/api/portraits/men/85.jpg" alt="Profile Photo" class="w-28 h-28 rounded-full border-4 border-emerald-500 object-cover mr-6"/>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">John Doe</h1>
+          <p class="mt-2 text-gray-600">Enthusiast • Marathon Runner • Trainer</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 text-center">
+        <div>
+          <div class="text-lg font-semibold text-gray-800">Age</div>
+          <div class="text-2xl font-bold text-emerald-600">32</div>
+        </div>
+        <div>
+          <div class="text-lg font-semibold text-gray-800">Height</div>
+          <div class="text-2xl font-bold text-emerald-600">180 cm</div>
+        </div>
+        <div>
+          <div class="text-lg font-semibold text-gray-800">Weight</div>
+          <div class="text-2xl font-bold text-emerald-600">78 kg</div>
+        </div>
+        <div>
+          <div class="text-lg font-semibold text-gray-800">BMI</div>
+          <div class="text-2xl font-bold text-emerald-600">24.1</div>
+        </div>
+        <div>
+          <div class="text-lg font-semibold text-gray-800">Goal</div>
+          <div class="text-emerald-600 font-semibold">Run 10km/month</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Today's Progress -->
+    <section class="bg-white rounded-2xl shadow-md p-8 mb-12">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-900">Today's Progress</h2>
+        <a href="progress.html" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition">Go to Progress Tracker</a>
+      </div>
+      <div class="grid grid-cols-2 gap-6 mb-6">
+        <div class="bg-gray-100 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Calories Burned</div>
+          <div class="text-2xl font-bold text-emerald-600">620 kcal</div>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Workouts Completed</div>
+          <div class="text-2xl font-bold text-emerald-600">2</div>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Steps Today</div>
+          <div class="text-2xl font-bold text-emerald-600">8,400</div>
+        </div>
+        <div class="bg-gray-100 rounded-lg p-4 text-center">
+          <div class="text-sm text-gray-600">Water Intake</div>
+          <div class="text-2xl font-bold text-emerald-600">2.4 L</div>
+        </div>
+      </div>
+      <!-- Demo Graph -->
+      <div class="bg-white p-4 rounded-lg">
+        <canvas id="progressChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Set Your Goal -->
+    <section class="bg-white rounded-2xl shadow p-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Set Your Goal</h2>
+      <form id="goal-form" class="flex flex-col sm:flex-row gap-4">
+        <input type="text" id="goal-input" class="flex-1 px-4 py-3 rounded bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Run 5km/week, Lose 2kg/month" required/>
+        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded font-semibold transition">Save Goal</button>
+      </form>
+      <div id="current-goal-display" class="mt-4 text-gray-700"></div>
+    </section>
+  </main>
+
+  <script>
+    // Chart.js Bar Chart Demo for Today's Progress
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Calories', 'Workouts', 'Steps', 'Water L'],
+        datasets: [{
+          label: 'Today',
+          data: [620, 2, 8400, 2.4],
+          backgroundColor: [
+            '#10b981', '#2563eb', '#f59e42', '#ef4444'
+          ],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    // Goal Set Functionality
+    const goalForm = document.getElementById('goal-form');
+    const goalInput = document.getElementById('goal-input');
+    const goalDisplay = document.getElementById('current-goal-display');
+
+    goalForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const value = goalInput.value.trim();
+      if (value) {
+        localStorage.setItem('userGoal', value);
+        goalDisplay.innerHTML = `<strong>Current Goal:</strong> ${value}`;
+        goalInput.value = '';
+      }
+    });
+
+    // Display current goal on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const goal = localStorage.getItem('userGoal');
+      if (goal) {
+        goalDisplay.innerHTML = `<strong>Current Goal:</strong> ${goal}`;
+      }
+    });
+  </script>
+</body>
+</html>
