@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Vitality Hub – Community</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="index.html" class="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+        <i data-lucide="heart" class="h-6 w-6 text-emerald-500"></i>
+        <span>Vitality Hub</span>
+      </a>
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="exercise.html" class="nav-link">Exercise</a>
+        <a href="nutrition.html" class="nav-link">Nutrition</a>
+        <a href="community.html" class="nav-link font-bold text-emerald-700">Community</a>
+        <a href="index.html#contact-section" class="nav-link">Contact</a>
+        <a href="login.html"  id="account-link"  class="nav-link">Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Community Content -->
+  <main class="pt-16 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold mb-8 text-emerald-700 text-center">Connect with Community</h1>
+    
+    <!-- Community Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+      <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2016/11/23/00/56/group-1853650_1280.png" alt="Support Group" class="w-20 h-20 object-cover rounded-full mb-4">
+        <h3 class="font-bold text-xl mb-2 text-blue-700">Support Groups</h3>
+        <p class="text-gray-600 text-center">Share progress and get motivation from like-minded members striving for wellness.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2014/04/03/10/01/knee-312998_1280.png" alt="Challenges" class="w-20 h-20 object-cover rounded-full mb-4">
+        <h3 class="font-bold text-xl mb-2 text-emerald-700">Wellness Challenges</h3>
+        <p class="text-gray-600 text-center">Participate in fun monthly challenges: step counts, hydration, healthy eating & more!</p>
+      </div>
+      <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2017/01/19/08/17/coffee-1994749_1280.jpg" alt="Forum" class="w-20 h-20 object-cover rounded-full mb-4">
+        <h3 class="font-bold text-xl mb-2 text-purple-700">Forum Q&A</h3>
+        <p class="text-gray-600 text-center">Ask questions & share your wisdom with the community in our forums.</p>
+      </div>
+    </div>
+    <!-- Call-to-action area -->
+    <div class="text-center mt-10">
+      <h2 class="text-2xl font-semibold mb-2">Want updates or support?</h2>
+      <p class="mb-5 text-gray-600">Join our mailing list or connect in the forums to never miss an event!</p>
+      <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+        <input type="email" required placeholder="Enter your email" class="flex-1 px-4 py-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded font-semibold transition">Subscribe</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="api.js"></script>
+
+</body>
+</html>

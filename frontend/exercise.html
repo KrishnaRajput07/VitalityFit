@@ -1,0 +1,234 @@
+<!--Dikkate yha se start hor hi haii arin bhai madad krooo-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Vitality Hub – Exercise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navbar with all elements -->
+  <nav class="bg-white shadow-lg w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="index.html" class="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+        <i data-lucide="heart" class="h-6 w-6 text-emerald-500"></i>
+        <span>Vitality Hub</span>
+      </a>
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="exercise.html" class="nav-link font-bold text-emerald-700 flex items-center space-x-1">
+          <i data-lucide="activity" class="h-4 w-4"></i>
+          <span>Exercise</span>
+        </a>
+        <a href="nutriton.html" class="nav-link">Nutrition</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="index.html#contact-section" class="nav-link">Contact</a>
+        <a href="login.html"  id="account-link"  class="nav-link">Account</a>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Exercise Content -->
+  <main class="pt-16 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Sub-Section Tabs -->
+    <div class="mb-10 flex gap-4 justify-center">
+      <button class="px-6 py-2 rounded-full font-semibold bg-black text-white hover:bg-emerald-600 transition category-tab" data-cat="all">ALL</button>
+      <button class="px-6 py-2 rounded-full font-semibold bg-gray-800 text-white hover:bg-emerald-600 transition category-tab" data-cat="cardio">CARDIO</button>
+      <button class="px-6 py-2 rounded-full font-semibold bg-gray-800 text-white hover:bg-emerald-600 transition category-tab" data-cat="strength">STRENGTH</button>
+      <button class="px-6 py-2 rounded-full font-semibold bg-gray-800 text-white hover:bg-emerald-600 transition category-tab" data-cat="yoga">YOGA</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-10 max-w-lg mx-auto">
+      <div class="flex items-center bg-white shadow rounded-lg overflow-hidden">
+        <input id="exercise-search-input" type="text" placeholder="Search for exercise or yoga..." class="flex-1 px-4 py-3 bg-transparent text-gray-700 placeholder-gray-400 focus:outline-none text-lg"/>
+        <button id="exercise-search-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 font-semibold">Search</button>
+      </div>
+    </div>
+    <div id="exercise-search-results" class="mb-8"></div>
+
+    <!-- Featured Horizontal Box -->
+    <div class="overflow-x-auto pb-6 mb-8">
+      <div class="flex gap-6 min-w-[1000px]">
+        <!-- Yoga for Beginners -->
+        <div class="flex flex-col min-w-[300px] bg-white rounded-xl shadow p-5">
+          <img src="https://cdn.pixabay.com/photo/2017/10/31/11/46/yoga-2903130_1280.png" alt="Yoga Beginners" class="w-full h-32 object-cover rounded mb-2">
+          <h3 class="text-xl font-bold mb-1">Yoga for Beginners</h3>
+          <p class="text-gray-600 mb-2">Easy-to-follow routines focused on mobility, breathing, and stress relief.</p>
+        </div>
+        <!-- Strength Training -->
+        <div class="flex flex-col min-w-[300px] bg-white rounded-xl shadow p-5">
+          <img src="https://cdn.pixabay.com/photo/2015/09/05/01/27/weightlifting-922765_1280.jpg" alt="Strength Training" class="w-full h-32 object-cover rounded mb-2">
+          <h3 class="text-xl font-bold mb-1">Strength Training</h3>
+          <p class="text-gray-600 mb-2">Build muscle and power with tailored dumbbell and resistance workouts.</p>
+        </div>
+        <!-- Cardio Blast -->
+        <div class="flex flex-col min-w-[300px] bg-white rounded-xl shadow p-5">
+          <img src="https://cdn.pixabay.com/photo/2016/11/14/03/16/runners-1822370_1280.jpg" alt="Cardio Blast" class="w-full h-32 object-cover rounded mb-2">
+          <h3 class="text-xl font-bold mb-1">Cardio Blast</h3>
+          <p class="text-gray-600 mb-2">High-energy sequences like running, jumping, and HIIT for stamina.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Default Exercise Suggestions -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2017/05/23/20/13/running-2333383_1280.jpg" alt="Running" class="w-24 h-24 object-cover rounded mb-2">
+        <span class="font-semibold text-gray-800">Running</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2016/11/18/17/20/dance-1838650_1280.jpg" alt="Zumba" class="w-24 h-24 object-cover rounded mb-2">
+        <span class="font-semibold text-gray-800">Zumba</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2017/06/06/21/41/stretching-2377351_1280.png" alt="Stretching" class="w-24 h-24 object-cover rounded mb-2">
+        <span class="font-semibold text-gray-800">Stretching</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+        <img src="https://cdn.pixabay.com/photo/2017/01/19/08/16/plank-1994746_1280.jpg" alt="Plank" class="w-24 h-24 object-cover rounded mb-2">
+        <span class="font-semibold text-gray-800">Plank</span>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Category → Placeholder data mapping
+    const placeholderResults = {
+      all: [
+        {name:'Push Ups', type:'strength', muscle:'chest', difficulty:'beginner', instructions:'Keep your body straight and lower yourself until your chest nearly touches the floor.'},
+        {name:'Running', type:'cardio', muscle:'legs', difficulty:'all levels', instructions:'Maintain a steady pace and keep breathing evenly.'}
+      ],
+      cardio: [
+        {name:'Cycling', type:'cardio', muscle:'legs', difficulty:'all levels', instructions:'Use a stationary or road bike at moderate intensity.'}
+      ],
+      strength: [
+        {name:'Squats', type:'strength', muscle:'legs', difficulty:'beginner', instructions:'Keep your back straight and lower your hips until thighs are parallel to the floor.'}
+      ],
+      yoga: [
+        {name:'Sun Salutation', type:'yoga', muscle:'full body', difficulty:'beginner', instructions:'Perform the sequence slowly with deep breaths.'}
+      ]
+    };
+
+    function renderExercises(list) {
+      if (!list || list.length === 0) {
+        document.getElementById('exercise-search-results').innerHTML = '<div class="text-gray-500">No exercises found.</div>';
+        return;
+      }
+      const html = list.map(e =>
+        `<div class="mb-4 p-3 rounded bg-white shadow">
+          <div class="font-bold text-xl">${e.name}</div>
+          <div class="text-gray-600 capitalize">${e.type || ''}${e.muscle ? ' – ' + e.muscle : ''} – <span class="capitalize">${e.difficulty || ''}</span></div>
+          <div class="mt-2 text-gray-700">${e.instructions || ''}</div>
+        </div>`
+      ).join('');
+      document.getElementById('exercise-search-results').innerHTML = html;
+    }
+
+    // Tab click listener
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('bg-black', 'font-bold'));
+        this.classList.add('bg-black', 'font-bold');
+        const cat = this.getAttribute('data-cat');
+        renderExercises(placeholderResults[cat]);
+      });
+    });
+
+    // Search input handler
+    document.getElementById('exercise-search-btn').addEventListener('click', function() {
+      const q = document.getElementById('exercise-search-input').value.trim().toLowerCase();
+      if (!q) { 
+        renderExercises([]); 
+        return; 
+      }
+      // Search placeholder data
+      const merged = Object.values(placeholderResults).flat();
+      const filtered = merged.filter(e => e.name.toLowerCase().includes(q) || e.type.toLowerCase().includes(q));
+      renderExercises(filtered);
+    });
+
+    // On load: show 'all'
+    window.addEventListener('DOMContentLoaded', () => {
+      renderExercises(placeholderResults['all']);
+    });
+
+
+    // Base URL of your backend API
+const API_BASE_URL = "https://vitalhu-backend.onrender.com/api";
+
+// Function to search exercises by query string using your backend API
+async function fetchExercises(query) {
+  if (!query) {
+    document.getElementById('exercise-search-results').innerHTML = '';
+    return;
+  }
+  
+  // Show loading message
+  document.getElementById('exercise-search-results').innerHTML = '<div class="text-gray-500">Loading...</div>';
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/exercise?search=${encodeURIComponent(query)}`);
+    
+    // Check if response is JSON
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error("Unexpected response: " + text.substring(0, 100));
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error fetching exercises");
+    }
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      document.getElementById('exercise-search-results').innerHTML = '<div class="text-gray-500">No exercises found.</div>';
+      return;
+    }
+
+    // Build HTML for results
+    const html = data.map(e =>
+      `<div class="mb-4 p-3 rounded bg-white shadow">
+        <div class="font-bold text-xl">${e.name}</div>
+        <div class="text-gray-600 capitalize">${e.type || ''}${e.muscle ? ' – ' + e.muscle : ''} – <span class="capitalize">${e.difficulty || ''}</span></div>
+        <div class="mt-2 text-gray-700">${e.instructions || ''}</div>
+      </div>`).join('');
+
+    document.getElementById('exercise-search-results').innerHTML = html;
+
+  } catch (err) {
+    document.getElementById('exercise-search-results').innerHTML = `<div class="text-red-500">Error: ${err.message}</div>`;
+  }
+}
+
+// Search button handler
+document.getElementById('exercise-search-btn').addEventListener('click', () => {
+  const query = document.getElementById('exercise-search-input').value.trim();
+  fetchExercises(query);
+});
+
+// Optional: Press Enter key in search input triggers search
+document.getElementById('exercise-search-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('exercise-search-btn').click();
+  }
+});
+
+  </script>
+  <script src="api.js"></script>
+
+</body>
+</html>

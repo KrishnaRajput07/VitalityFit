@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Progress Tracker - Vitality Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <a href="index.html" class="text-2xl font-bold text-gray-800 flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+        </svg>
+        <span>Vitality Hub</span>
+      </a>
+      <div class="flex items-center space-x-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+        <a href="exercise.html" class="nav-link">Exercise</a>
+        <a href="nutrition.html" class="nav-link">Nutrition</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="index.html#contact-section" class="nav-link">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-20 pb-20 max-w-4xl mx-auto px-4">
+
+    <h1 class="text-3xl font-extrabold text-gray-800 mb-8 text-center">Your Progress Tracker</h1>
+
+    <!-- Time Range Selector -->
+    <div class="flex justify-center gap-4 mb-10">
+      <button class="range-btn px-6 py-2 rounded-full font-semibold transition bg-emerald-500 text-white" data-range="week">Week</button>
+      <button class="range-btn px-6 py-2 rounded-full font-semibold transition bg-gray-800 text-white" data-range="month">Month</button>
+    </div>
+
+    <!-- Calorie Burn Line Chart -->
+    <section class="bg-white rounded-2xl shadow p-6 mb-8">
+      <h2 class="text-xl font-bold mb-1">Calorie Burn</h2>
+      <div class="text-gray-500 mb-6">Track how many calories you've burned over the selected period.</div>
+      <canvas id="calorieChart" height="80"></canvas>
+    </section>
+
+    <!-- Workout Bar Chart -->
+    <section class="bg-white rounded-2xl shadow p-6 mb-8">
+      <h2 class="text-xl font-bold mb-1">Workouts Completed</h2>
+      <div class="text-gray-500 mb-6">See your workout consistency and session count.</div>
+      <canvas id="workoutChart" height="80"></canvas>
+    </section>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-5 mb-10">
+      <div class="bg-white rounded-lg p-4 text-center shadow">
+        <div class="text-sm text-gray-600">Steps (Avg/Day)</div>
+        <div class="text-2xl font-bold text-emerald-600" id="stat-steps">8,500</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center shadow">
+        <div class="text-sm text-gray-600">Weight Loss</div>
+        <div class="text-2xl font-bold text-emerald-600" id="stat-weight">−0.9 kg</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center shadow">
+        <div class="text-sm text-gray-600">Avg Workout Time</div>
+        <div class="text-2xl font-bold text-emerald-600" id="stat-time">42 min</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center shadow">
+        <div class="text-sm text-gray-600">Water Consumed</div>
+        <div class="text-2xl font-bold text-emerald-600" id="stat-water">18.5 L</div>
+      </div>
+      <div class="bg-white rounded-lg p-4 text-center shadow col-span-2">
+        <div class="text-sm text-gray-600">Active Days</div>
+        <div class="text-2xl font-bold text-emerald-600" id="stat-days">6/7 days</div>
+      </div>
+    </div>
+
+    <!-- Last Workout Table -->
+    <section class="bg-white rounded-2xl shadow p-6 mb-8">
+      <h2 class="text-xl font-bold mb-3">Last Workout Reps & Sets</h2>
+      <div class="overflow-x-auto">
+      <table class="min-w-full text-left">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="py-2 px-4">Exercise</th>
+            <th class="py-2 px-4">Last Reps</th>
+            <th class="py-2 px-4">Last Sets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b">
+            <td class="py-2 px-4">Push Ups</td>
+            <td class="py-2 px-4">22</td>
+            <td class="py-2 px-4">3</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-2 px-4">Plank (sec)</td>
+            <td class="py-2 px-4">60</td>
+            <td class="py-2 px-4">3</td>
+          </tr>
+          <tr>
+            <td class="py-2 px-4">Squats</td>
+            <td class="py-2 px-4">30</td>
+            <td class="py-2 px-4">3</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <!-- Add/Update Goal -->
+    <section class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Update Your Goal</h2>
+      <form id="goal-form" class="flex flex-col sm:flex-row gap-4">
+        <input type="text" id="goal-input" class="flex-1 px-4 py-3 rounded bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Cycle 100km this month" required/>
+        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded font-semibold transition">Set Goal</button>
+      </form>
+      <div id="current-goal-display" class="mt-4 text-gray-700"></div>
+    </section>
+  </main>
+
+  <script>
+    if (!localStorage.getItem("vhToken")) {
+  window.location.href = "login.html";
+}
+
+    // Demo data for week and month
+    const DATA = {
+      week: {
+        calorie:   [450, 620, 700, 820, 540, 760, 610],
+        calorieLabels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        workouts:  [1, 1, 1, 1, 0, 2, 1],
+        workoutsLabels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        steps: 8500,
+        weight: -0.9,
+        time: 42,
+        water: 18.5,
+        days: '6/7'
+      },
+      month: {
+        calorie:   [500, 750, 700, 800, 640, 760, 720, 680, 700, 800, 540, 860, 610, 780, 845, 650, 880, 700, 750, 600, 810, 720, 710, 705, 790, 760, 830, 820, 760, 770],
+        calorieLabels: Array.from({length: 30}, (_, i) => (i+1).toString()),
+        workouts:  [1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2, 2],
+        workoutsLabels: Array.from({length: 30}, (_, i) => (i+1).toString()),
+        steps: 9100,
+        weight: -3.2,
+        time: 40,
+        water: 75.9,
+        days: '25/30'
+      }
+    };
+
+    // Start in week mode
+    let selectedRange = 'week';
+
+    // Set up charts
+    let calorieChart, workoutChart;
+    function setupCharts() {
+      const ctxC = document.getElementById('calorieChart').getContext('2d');
+      const ctxW = document.getElementById('workoutChart').getContext('2d');
+      calorieChart = new Chart(ctxC, {
+        type: 'line',
+        data: {
+          labels: DATA[selectedRange].calorieLabels,
+          datasets: [{
+            label: 'Calories Burned',
+            data: DATA[selectedRange].calorie,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+            pointBackgroundColor: "#10b981"
+          }]
+        },
+        options: { responsive: true, plugins: {legend: {display: false} }, scales: {y: {beginAtZero: true} } }
+      });
+      workoutChart = new Chart(ctxW, {
+        type: 'bar',
+        data: {
+          labels: DATA[selectedRange].workoutsLabels,
+          datasets: [{
+            label: 'Workouts Completed',
+            data: DATA[selectedRange].workouts,
+            backgroundColor: '#2563eb'
+          }]
+        },
+        options: { responsive: true, plugins: {legend: {display: false} }, scales: {y: {beginAtZero: true, stepSize: 1, ticks: {precision:0}} } }
+      });
+    }
+    function updateCharts(range) {
+      calorieChart.data.labels = DATA[range].calorieLabels;
+      calorieChart.data.datasets[0].data = DATA[range].calorie;
+      calorieChart.update();
+      workoutChart.data.labels = DATA[range].workoutsLabels;
+      workoutChart.data.datasets[0].data = DATA[range].workouts;
+      workoutChart.update();
+      // Update stats
+      document.getElementById('stat-steps').innerText = DATA[range].steps.toLocaleString();
+      document.getElementById('stat-weight').innerText = DATA[range].weight > 0 ? '+'+DATA[range].weight+' kg' : DATA[range].weight+' kg';
+      document.getElementById('stat-time').innerText = DATA[range].time + ' min';
+      document.getElementById('stat-water').innerText = DATA[range].water + ' L';
+      document.getElementById('stat-days').innerText = DATA[range].days + ' days';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupCharts();
+      // Range selector
+      document.querySelectorAll('.range-btn').forEach(btn => {
+        btn.addEventListener('click',function(){
+          document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('bg-emerald-500'));
+          this.classList.add('bg-emerald-500');
+          selectedRange = this.dataset.range;
+          updateCharts(selectedRange);
+        });
+      });
+      // load goal
+      const goal = localStorage.getItem('userGoal');
+      if(goal) document.getElementById('current-goal-display').innerHTML = "<strong>Current goal:</strong> "+goal;
+    });
+
+    // Save goal
+    document.getElementById('goal-form').addEventListener('submit',e=>{
+      e.preventDefault();
+      const v = document.getElementById('goal-input').value.trim();
+      if(v){
+        localStorage.setItem('userGoal', v);
+        document.getElementById('current-goal-display').innerHTML = "<strong>Current goal:</strong> "+v;
+        document.getElementById('goal-input').value = '';
+      }
+    });
+  </script>
+  <script src="api.js"></script>
+
+</body>
+</html>
