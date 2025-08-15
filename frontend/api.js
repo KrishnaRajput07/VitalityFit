@@ -1,5 +1,5 @@
 // ================== CONFIG ==================
-const API_BASE_URL = "https://vitalhu-backend.onrender.com/api";
+const API_BASE_URL = "https://vitalhu-backend.onrender.com";
 
 // ================== UTILS ==================
 function getAuthHeaders() {
@@ -16,10 +16,24 @@ async function apiRequest(endpoint, method = "GET", body = null, auth = false) {
   };
   if (body) options.body = JSON.stringify(body);
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, options);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "API Error");
-  return data;
+  try {
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    
+    // Check if response is JSON
+    const contentType = res.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      throw new Error(`Server returned ${res.status}: ${res.statusText}. Expected JSON but got ${contentType}`);
+    }
+    
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || `API Error: ${res.status}`);
+    return data;
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('JSON')) {
+      throw new Error('Server returned invalid response. Please check if the backend is running.');
+    }
+    throw error;
+  }
 }
 
 // ================== AUTH ==================
