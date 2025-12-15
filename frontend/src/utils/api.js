@@ -1,5 +1,14 @@
 // API Configuration and Helper Functions
-const API_URL = import.meta.env.VITE_API_URL || 'https://vitalityfit-backend.onrender.com';
+const getBaseUrl = () => {
+    // If running on localhost, look for local backend
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:5000';
+    }
+    // Otherwise (production/Vercel), point to Render backend
+    return 'https://vitalityfit-backend.onrender.com';
+};
+
+const API_URL = getBaseUrl();
 
 // Helper function to get auth headers
 export const getAuthHeaders = () => {
