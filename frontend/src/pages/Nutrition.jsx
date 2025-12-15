@@ -68,7 +68,7 @@ const Nutrition = () => {
                             <input
                                 type="text"
                                 placeholder="Search for food (e.g., 'Dal', 'Paneer', 'Apple')..."
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-primary outline-none text-lg transition"
+                                className="w-full pl-12 pr-32 md:pr-4 py-4 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-primary outline-none text-lg transition"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                             />
@@ -76,9 +76,9 @@ const Nutrition = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="absolute right-2 top-2 bottom-2 px-6 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition disabled:opacity-50"
+                                className="absolute right-2 top-2 bottom-2 px-6 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition disabled:opacity-50 text-sm md:text-base"
                             >
-                                {loading ? 'Searching...' : 'Search'}
+                                {loading ? '...' : 'Search'}
                             </button>
                         </form>
 

@@ -1,12 +1,19 @@
 import React, { useRef, useState } from 'react';
 import PoseCamera from '../components/PoseCamera';
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Volume2, VolumeX } from 'lucide-react';
+import useSpeech from '../hooks/useSpeech';
 
 const CatCow = () => {
     const [feedback, setFeedback] = useState('Come to tabletop position');
     const [state, setState] = useState('Neutral');
     const [reps, setReps] = useState(0);
+    const [isMuted, setIsMuted] = useState(false);
+    const { speak } = useSpeech();
+
+    React.useEffect(() => {
+        speak("Welcome. Tabletop position.");
+    }, [speak]);
     const stateRef = useRef({ current: 'neutral', reps: 0 });
 
     const calculateAngle = (a, b, c) => {
@@ -49,6 +56,7 @@ const CatCow = () => {
                 if (currentState.current === 'cow') {
                     currentState.reps += 1;
                     setReps(currentState.reps);
+                    if (!isMuted) speak("Cat");
                 }
                 currentState.current = 'cat';
                 setState('Cat 🐱');
@@ -58,6 +66,7 @@ const CatCow = () => {
                 if (currentState.current === 'cat') {
                     currentState.reps += 1;
                     setReps(currentState.reps);
+                    if (!isMuted) speak("Cow");
                 }
                 currentState.current = 'cow';
                 setState('Cow 🐮');
@@ -73,29 +82,45 @@ const CatCow = () => {
         }
     };
 
+    const reset = () => {
+        setReps(0);
+        setState('Neutral');
+        setFeedback('Come to tabletop position');
+        stateRef.current = { current: 'neutral', reps: 0 };
+    };
+
     return (
-        <div className="h-screen flex flex-col bg-background">
-            <div className="p-4 flex items-center justify-between bg-white shadow-sm z-10">
-                <Link to="/exercises" className="flex items-center gap-2 font-bold text-muted hover:text-text">
-                    <ArrowLeft className="w-5 h-5" /> Back
+        <div className="min-h-screen flex flex-col pb-12 md:h-[calc(100vh-8rem)]">
+            <div className="flex items-center justify-between mb-4 px-1">
+                <Link to="/exercises" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+                    <ArrowLeft className="w-5 h-5" />
+                    <span>Back</span>
                 </Link>
-                <h1 className="text-xl font-black text-secondary">Cat-Cow AI</h1>
-                <div className="flex gap-4">
-                    <div className="px-4 py-1 bg-primary/20 text-secondary rounded-lg font-bold text-sm">
-                        Pose: {state}
-                    </div>
-                    <div className="px-4 py-1 bg-gray-100 rounded-lg font-bold text-sm">
-                        Cycles: {reps}
-                    </div>
+                <div className="flex gap-2">
+                    <button onClick={() => setIsMuted(!isMuted)} className="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
+                        {isMuted ? <VolumeX className="w-4 h-4 text-gray-400" /> : <Volume2 className="w-4 h-4 text-accent" />}
+                    </button>
+                    {/* Reset Button added implied */}
                 </div>
             </div>
-            <div className="flex-1 relative">
-                <PoseCamera onResults={onResults} />
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-8 py-4 rounded-2xl shadow-xl text-center">
-                    <div className="text-3xl font-black text-secondary mb-1">{state}</div>
-                    <div className="text-sm font-bold text-muted uppercase tracking-wider mb-2">Current Pose</div>
-                    <div className={`text-lg font-bold ${state.includes('Cat') || state.includes('Cow') ? 'text-ok' : 'text-text'}`}>
-                        {feedback}
+
+            <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 min-h-0">
+                <div className="lg:col-span-2 relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-800 min-h-[75vh] lg:min-h-0 ring-1 ring-white/10">
+                    <PoseCamera onResults={onResults} />
+                    <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
+                        <div className="bg-black/60 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 shadow-lg">
+                            <div className="text-xs text-gray-300 uppercase font-bold tracking-wider mb-1">Current Pose</div>
+                            <div className={`text-xl font-bold flex items-center gap-2 ${state.includes('Cat') || state.includes('Cow') ? 'text-ok' : 'text-gray-200'}`}>
+                                {feedback}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="bg-panel border border-gray-800 p-6 rounded-3xl text-center shadow-lg relative overflow-hidden group">
+                        <div className="text-sm text-gray-400 uppercase font-bold tracking-wider mb-2 relative z-10">Cycles</div>
+                        <div className="text-7xl md:text-9xl font-black text-white mb-2 font-mono relative z-10 tracking-tighter">{reps}</div>
                     </div>
                 </div>
             </div>
