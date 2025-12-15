@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { exerciseDatabase, calculateCalories, getCategories, filterByCategory } from '../utils/exerciseDatabase';
 import { useAuth } from '../context/AuthContext';
 import { Calculator, Plus, Check, Play, Pause, RotateCcw, Timer, Sparkles } from 'lucide-react';
+import { API_URL } from '../utils/api';
 
 const CalorieCalculator = () => {
     const { user } = useAuth();
@@ -109,7 +110,7 @@ const CalorieCalculator = () => {
                 totalRepsOrMinutes = time / 60000;
             }
 
-            const response = await fetch('http://localhost:5000/api/activity-log', {
+            const response = await fetch(`${API_URL}/api/activity-log`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

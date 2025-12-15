@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, Heart, Share2, User, Send, Users, Star, Image as ImageIcon, Circle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../utils/api';
 
 const Community = () => {
     const { user } = useAuth();
@@ -70,7 +71,7 @@ const Community = () => {
 
         setReplyingTo(null);
 
-        await fetch(`http://localhost:5000/api/posts/${postId}/comments`, {
+        await fetch(`${API_URL}/api/posts/${postId}/comments`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -158,19 +159,19 @@ const Community = () => {
     }, []);
 
     const fetchPosts = async () => {
-        const res = await fetch('http://localhost:5000/api/posts');
+        const res = await fetch(`${API_URL}/api/posts`);
         const data = await res.json();
         setPosts(data);
     };
 
     const fetchClubs = async () => {
-        const res = await fetch('http://localhost:5000/api/clubs');
+        const res = await fetch(`${API_URL}/api/clubs`);
         const data = await res.json();
         setClubs(data);
     };
 
     const fetchMembers = async (clubId) => {
-        const res = await fetch(`http://localhost:5000/api/clubs/${clubId}/members`);
+        const res = await fetch(`${API_URL}/api/clubs/${clubId}/members`);
         const data = await res.json();
         setMembers(data);
     };
@@ -178,7 +179,7 @@ const Community = () => {
     const fetchComments = async (postId, showLoading = true) => {
         if (showLoading) setLoadingComments(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/posts/${postId}/comments`);
+            const res = await fetch(`${API_URL}/api/posts/${postId}/comments`);
             const data = await res.json();
             setComments(prev => ({ ...prev, [postId]: data }));
         } catch (err) {
@@ -199,7 +200,7 @@ const Community = () => {
     const handlePost = async (e) => {
         e.preventDefault();
         if (!newPost.trim()) return;
-        await fetch('http://localhost:5000/api/posts', {
+        await fetch(`${API_URL}/api/posts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -216,7 +217,7 @@ const Community = () => {
     };
 
     const handleLike = async (id) => {
-        await fetch(`http://localhost:5000/api/posts/${id}/like`, { method: 'POST' });
+        await fetch(`${API_URL}/api/posts/${id}/like`, { method: 'POST' });
         fetchPosts();
     };
 

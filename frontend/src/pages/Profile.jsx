@@ -6,6 +6,7 @@ import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../utils/api';
 
 const Profile = () => {
     const { user, updateUser } = useAuth(); // Added updateUser
@@ -49,7 +50,7 @@ const Profile = () => {
     }, [user]);
 
     const fetchSchedule = async () => {
-        const res = await fetch(`http://localhost:5000/api/schedule/${user.id}`);
+        const res = await fetch(`${API_URL}/api/schedule/${user.id}`);
         const data = await res.json();
         const parsed = data.map(s => ({
             ...s,
@@ -69,7 +70,7 @@ const Profile = () => {
 
     const addSchedule = async () => {
         if (newSchedule.exercises.length === 0) return;
-        await fetch('http://localhost:5000/api/schedule', {
+        await fetch(`${API_URL}/api/schedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.id, ...newSchedule }),
@@ -85,7 +86,7 @@ const Profile = () => {
     };
 
     const deleteSchedule = async (id) => {
-        await fetch(`http://localhost:5000/api/schedule/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/api/schedule/${id}`, { method: 'DELETE' });
         fetchSchedule();
     };
 
@@ -93,7 +94,7 @@ const Profile = () => {
         e.preventDefault();
         setIsSaving(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/user/${user.id}`, {
+            const res = await fetch(`${API_URL}/api/user/${user.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editForm),

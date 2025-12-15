@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Apple, Flame, AlertCircle, Utensils } from 'lucide-react';
+import { API_URL } from '../utils/api';
 
 const Nutrition = () => {
     const [query, setQuery] = useState('');
@@ -18,7 +19,7 @@ const Nutrition = () => {
         setResults([]);
 
         try {
-            const res = await fetch('http://localhost:5000/api/nutrition/search', {
+            const res = await fetch(`${API_URL}/api/nutrition/search`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query }),

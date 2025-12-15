@@ -3,6 +3,7 @@ import { TrendingUp, Calendar, Clock, Flame, Trophy, Star, Plus, Play, Zap } fro
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_URL } from '../utils/api';
 
 const StatCard = ({ icon: Icon, label, value, trend, color }) => (
     <motion.div
@@ -36,7 +37,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (user) {
             // Fetch Schedule
-            fetch(`http://localhost:5000/api/schedule/${user.id}`)
+            fetch(`${API_URL}/api/schedule/${user.id}`)
                 .then(res => res.json())
                 .then(data => {
                     const parsed = data.map(s => ({
@@ -48,7 +49,7 @@ const Dashboard = () => {
                 });
 
             // Fetch Stats
-            fetch(`http://localhost:5000/api/dashboard/stats/${user.id}`)
+            fetch(`${API_URL}/api/dashboard/stats/${user.id}`)
                 .then(res => res.json())
                 .then(data => setStats(data))
                 .catch(err => console.error("Failed to fetch stats", err));

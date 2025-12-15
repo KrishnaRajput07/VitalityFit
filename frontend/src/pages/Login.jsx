@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Activity, ArrowRight, Chrome } from 'lucide-react';
+import { API_URL } from '../utils/api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/auth/login', {
+            const res = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -34,7 +35,7 @@ const Login = () => {
     const handleGoogleLogin = async () => {
         // Simulated Google Login Flow
         try {
-            const res = await fetch('http://localhost:5000/api/auth/google', {
+            const res = await fetch(`${API_URL}/api/auth/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
