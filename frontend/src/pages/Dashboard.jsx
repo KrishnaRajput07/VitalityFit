@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TrendingUp, Calendar, Clock, Flame, Trophy, Star, Plus, Play, Zap } from 'lucide-react';
+import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -31,6 +32,7 @@ const Dashboard = () => {
     const { user } = useAuth();
     const [schedule, setSchedule] = useState([]);
     const [stats, setStats] = useState({ caloriesBurned: 0, activeMinutes: 0, workouts: 0, streak: 0 });
+    const [activityData, setActivityData] = useState([]);
     const [nextWorkout, setNextWorkout] = useState(null);
     const navigate = useNavigate();
 
@@ -53,6 +55,12 @@ const Dashboard = () => {
                 .then(res => res.json())
                 .then(data => setStats(data))
                 .catch(err => console.error("Failed to fetch stats", err));
+
+            // Fetch Graph Data
+            fetch(`${API_URL}/api/dashboard/activity/${user.id}`)
+                .then(res => res.json())
+                .then(data => setActivityData(data))
+                .catch(err => console.error("Failed to fetch graph data", err));
         }
     }, [user]);
 
@@ -122,18 +130,65 @@ const Dashboard = () => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard icon={Flame} label="Calories Burned" value={stats.caloriesBurned} trend={stats.caloriesBurned > 0 ? "+Today" : ""} color="bg-orange-100 text-orange-600" />
-                <StatCard icon={Clock} label="Active Minutes" value={stats.activeMinutes} trend={stats.activeMinutes > 0 ? "+Today" : ""} color="bg-blue-100 text-blue-600" />
-                <StatCard icon={TrendingUp} label="Workouts" value={stats.workouts} trend={stats.workouts > 0 ? "+Today" : ""} color="bg-primary/20 text-secondary" />
-                <StatCard icon={Star} label="Streak" value={`${stats.streak} Days`} color="bg-purple-100 text-purple-600" />
+            {/* Stat Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard
+                    icon={Flame}
+                    label="Calories"
+                    value={stats.caloriesBurned}
+                    color="text-orange-500"
+                    trend="Burned today"
+                />
+                <StatCard
+                    icon={Clock}
+                    label="Minutes"
+                    value={stats.activeMinutes}
+                    color="text-blue-500"
+                    trend="Active time"
+                />
+                <StatCard
+                    icon={TrendingUp}
+                    label="Workouts"
+                    value={stats.workouts}
+                    color="text-green-500"
+                    trend="Sessions"
+                />
+                <StatCard
+                    icon={Zap}
+                    label="Streak"
+                    value={`${stats.streak} Days`}
+                    color="text-purple-500"
+                    trend="Keep going!"
+                />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-8 shadow-sm flex items-center justify-center min-h-[300px]">
-                    <div className="text-center">
-                        <h3 className="font-bold text-xl mb-2 text-text">Activity History</h3>
-                        <p className="text-muted">Start working out to see your stats!</p>
+                <div className="lg:col-span-2 bg-white border border-gray-100 rounded-2xl p-8 shadow-sm min-h-[400px]">
+                    <h3 className="font-bold text-xl mb-6 text-text">Activity History</h3>
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <ComposedChart data={activityData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                    cursor={{ fill: '#F9FAFB' }}
+                                />
+                                <Bar dataKey="calories" name="Consumed" fill="#FDBA74" radius={[4, 4, 0, 0]} barSize={20} />
+                                <Area type="monotone" dataKey="workout" name="Burned" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.1} strokeWidth={3} />
+                            </ComposedChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 

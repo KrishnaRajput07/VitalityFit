@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Heart, Share2, User, Send, Users, Star, Image as ImageIcon, Circle } from 'lucide-react';
+import { MessageSquare, Heart, Share2, User, Send, Users, Star, Image as ImageIcon, Circle, Trash2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../utils/api';
 
@@ -75,6 +75,7 @@ const Community = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                userId: user?.id,
                 userName: user?.name || 'Guest',
                 userAvatar: user?.avatar,
                 content: content,
@@ -204,6 +205,7 @@ const Community = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                userId: user?.id,
                 userName: user?.name || 'Guest',
                 userAvatar: user?.avatar, // Add avatar
                 content: newPost,
@@ -214,6 +216,27 @@ const Community = () => {
         setNewPost('');
         setImageUrl('');
         fetchPosts();
+    };
+
+    const handleDelete = async (postId) => {
+        if (!confirm("Delete this post?")) return;
+        await fetch(`${API_URL}/api/posts/${postId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user?.id })
+        });
+        fetchPosts();
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleLike = async (id) => {
@@ -255,13 +278,20 @@ const Community = () => {
                                 ></textarea>
                                 <div className="flex justify-between items-center">
                                     <div className="flex-1 mr-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Image URL (optional)..."
-                                            className="w-full px-4 py-2 bg-gray-50 rounded-lg text-sm border-none focus:ring-2 focus:ring-primary outline-none"
-                                            value={imageUrl}
-                                            onChange={(e) => setImageUrl(e.target.value)}
-                                        />
+                                        <div className="flex items-center gap-2">
+                                            <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-bold text-muted flex items-center gap-2 transition">
+                                                <ImageIcon className="w-4 h-4" /> Upload Image
+                                                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                                            </label>
+                                            {imageUrl && (
+                                                <div className="relative">
+                                                    <img src={imageUrl} alt="Preview" className="w-10 h-10 rounded-lg object-cover border border-gray-200" />
+                                                    <button onClick={() => setImageUrl('')} className="absolute -top-2 -right-2 bg-bad text-white rounded-full p-0.5 hover:bg-red-600">
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                     <button type="submit" className="px-6 py-2 bg-secondary text-white font-bold rounded-lg hover:bg-secondary/90 transition shadow-lg shadow-secondary/20 flex items-center gap-2">
                                         <Send className="w-4 h-4" /> Post
@@ -298,10 +328,19 @@ const Community = () => {
                                     </button>
                                     <button
                                         onClick={() => toggleComments(post.id)}
-                                        className="flex items-center gap-2 hover:text-secondary transition"
+                                        className="flex items-center gap-2 hover:text-secondary transition relative"
                                     >
-                                        <MessageSquare className="w-4 h-4" /> Comment
+                                        <MessageSquare className="w-4 h-4" />
+                                        Comment
+                                        {post.commentCount > 0 && (
+                                            <span className="w-2 h-2 bg-bad rounded-full absolute -top-1 -right-2"></span>
+                                        )}
                                     </button>
+                                    {user && post.userId === user.id && (
+                                        <button onClick={() => handleDelete(post.id)} className="ml-auto text-gray-300 hover:text-bad transition">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
 
                                 {/* Comments Section */}

@@ -17,7 +17,9 @@ export default {
         muted: "#78716c",      // Stone 500
         ok: "#22c55e",
         warn: "#f59e0b",
+        warn: "#f59e0b",
         bad: "#ef4444",
+        pink: "#ec4899", // Pink 500 - The "slight pink" requested
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui'],

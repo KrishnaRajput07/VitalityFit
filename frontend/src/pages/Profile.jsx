@@ -36,6 +36,9 @@ const Profile = () => {
         'Yoga': ['Sun Salutation', 'Warrior I & II', 'Downward Dog', 'Child\'s Pose', 'Tree Pose', 'Cobra']
     };
 
+    const [activityData, setActivityData] = useState([]);
+    const [radarData, setRadarData] = useState([]);
+
     useEffect(() => {
         if (user) {
             fetchSchedule();
@@ -46,8 +49,23 @@ const Profile = () => {
                 weight: user.weight,
                 avatar: user.avatar || ''
             });
+            fetchGraphData();
         }
     }, [user]);
+
+    const fetchGraphData = async () => {
+        try {
+            const res = await fetch(`${API_URL}/api/dashboard/activity/${user.id}`);
+            const data = await res.json();
+            setActivityData(data);
+
+            const resRadar = await fetch(`${API_URL}/api/activity-log/${user.id}/stats`);
+            const dataRadar = await resRadar.json();
+            setRadarData(dataRadar);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const fetchSchedule = async () => {
         const res = await fetch(`${API_URL}/api/schedule/${user.id}`);
@@ -336,19 +354,15 @@ const Profile = () => {
                             <Activity className="w-6 h-6 text-secondary" />
                             <h3 className="font-bold text-xl">Exercise Minutes</h3>
                         </div>
-                        {isNewUser ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center -mt-8">
-                                <p className="text-lg font-bold text-muted mb-2">"Consistency is key."</p>
-                                <p className="text-sm text-gray-400">Log activity to see your stats!</p>
-                            </div>
-                        ) : (
-                            <ResponsiveContainer width="100%" height="80%">
-                                <BarChart data={exerciseMinutesData}>
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                                    <Tooltip cursor={{ fill: '#f3f4f6' }} />
-                                    <Bar dataKey="mins" fill="#bef264" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                        <ResponsiveContainer width="100%" height="80%">
+                            <BarChart data={activityData}>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                                <Tooltip cursor={{ fill: '#f3f4f6' }} />
+                                <Bar dataKey="workout" name="Burned (kcal)" fill="#bef264" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        {activityData.length === 0 && (
+                            <div className="text-center text-sm text-muted mt-2">No data yet</div>
                         )}
                     </div>
 
@@ -357,25 +371,21 @@ const Profile = () => {
                             <PieChart className="w-6 h-6 text-orange-500" />
                             <h3 className="font-bold text-xl">Nutrition History</h3>
                         </div>
-                        {isNewUser ? (
-                            <div className="h-full flex flex-col items-center justify-center text-center -mt-8">
-                                <p className="text-lg font-bold text-muted mb-2">"You are what you eat."</p>
-                                <p className="text-sm text-gray-400">Track your meals to unlock insights!</p>
-                            </div>
-                        ) : (
-                            <ResponsiveContainer width="100%" height="80%">
-                                <AreaChart data={nutritionHistoryData}>
-                                    <defs>
-                                        <linearGradient id="colorCal" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
-                                            <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                                    <Tooltip />
-                                    <Area type="monotone" dataKey="cal" stroke="#f97316" fillOpacity={1} fill="url(#colorCal)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
+                        <ResponsiveContainer width="100%" height="80%">
+                            <AreaChart data={activityData}>
+                                <defs>
+                                    <linearGradient id="colorCal" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.8} />
+                                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                                <Tooltip />
+                                <Area type="monotone" dataKey="calories" name="Consumed (kcal)" stroke="#f97316" fillOpacity={1} fill="url(#colorCal)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                        {activityData.length === 0 && (
+                            <div className="text-center text-sm text-muted mt-2">No data yet</div>
                         )}
                     </div>
                 </div>
@@ -425,17 +435,10 @@ const Profile = () => {
                 {/* Radar Chart */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm h-[350px] flex flex-col">
                     <h3 className="font-bold text-xl mb-2 text-center">Your Fitness Profile</h3>
-                    <div className="flex-1 w-full min-h-0 flex items-center justify-center">
-                        {!isNewUser ? (
+                    <div className="flex-1 w-full min-h-0 flex items-center justify-center relative">
+                        {radarData.some(d => d.A > 0) ? (
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={[
-                                    { subject: 'Strength', A: 80, fullMark: 100 },
-                                    { subject: 'Cardio', A: 65, fullMark: 100 },
-                                    { subject: 'Flexibility', A: 50, fullMark: 100 },
-                                    { subject: 'Endurance', A: 70, fullMark: 100 },
-                                    { subject: 'Balance', A: 60, fullMark: 100 },
-                                    { subject: 'Power', A: 75, fullMark: 100 },
-                                ]}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                                     <PolarGrid stroke="#e5e7eb" />
                                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#9ca3af', fontSize: 12, fontWeight: 'bold' }} />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
@@ -444,9 +447,9 @@ const Profile = () => {
                                 </RadarChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="text-center p-6">
+                            <div className="text-center p-6 animate-fadeIn">
                                 <p className="text-xl font-medium italic text-muted">"The only bad workout is the one that didn't happen."</p>
-                                <p className="text-sm font-bold text-secondary mt-4">Start your journey to unlock your fitness profile!</p>
+                                <p className="text-sm font-bold text-secondary mt-4 animate-bounce">Start logging to unlock your stats!</p>
                             </div>
                         )}
                     </div>

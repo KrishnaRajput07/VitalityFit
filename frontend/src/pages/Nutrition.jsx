@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { Search, Plus, Apple, Flame, AlertCircle, Utensils } from 'lucide-react';
+import { Search, Plus, Apple, Flame, AlertCircle, Utensils, Trash2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../utils/api';
 
 const Nutrition = () => {
+    const { user } = useAuth();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [dailyLog, setDailyLog] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [quantity, setQuantity] = useState(1); // Default 1 serving/100g
+    const [quantity, setQuantity] = useState(1);
+    // Fetch logs on mount
+    React.useEffect(() => {
+        if (user) {
+            const today = new Date().toISOString().split('T')[0];
+            fetch(`${API_URL}/api/nutrition/log/${user.id}/${today}`)
+                .then(res => res.json())
+                .then(data => setDailyLog(data))
+                .catch(err => console.error(err));
+        }
+    }, [user]);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -25,10 +37,15 @@ const Nutrition = () => {
                 body: JSON.stringify({ query }),
             });
             const data = await res.json();
-            if (data.length === 0) {
-                setError('No food found. Try a different term.');
+            if (Array.isArray(data)) {
+                if (data.length === 0) {
+                    setError('No food found. Try a different term.');
+                } else {
+                    setResults(data);
+                }
             } else {
-                setResults(data);
+                setResults([]);
+                setError('Received invalid data from server.');
             }
         } catch (err) {
             setError('Failed to fetch data.');
@@ -36,24 +53,57 @@ const Nutrition = () => {
         setLoading(false);
     };
 
-    const addToLog = (food) => {
-        const factor = quantity; // Assuming base is 1 serving or 100g
-        const loggedItem = {
-            ...food,
-            id: Date.now(),
-            calories: Math.round(food.calories * factor),
-            protein: Math.round(food.protein * factor),
-            carbs: Math.round(food.carbs * factor),
-            fat: Math.round(food.fat * factor),
-            quantity: factor
-        };
-        setDailyLog([...dailyLog, loggedItem]);
+    const addToLog = async (food) => {
+        if (!user) {
+            alert("Please login to log food.");
+            return;
+        }
+        const factor = quantity;
+        const today = new Date().toISOString().split('T')[0];
+
+        try {
+            const res = await fetch(`${API_URL}/api/nutrition/log`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.id,
+                    date: today,
+                    foods: [{
+                        name: food.name,
+                        calories: Math.round(food.calories * factor),
+                        protein: Math.round(food.protein * factor),
+                        carbs: Math.round(food.carbs * factor),
+                        fat: Math.round(food.fat * factor),
+                        quantity: factor,
+                        image: food.image
+                    }]
+                })
+            });
+
+            if (res.ok) {
+                const newLogs = await res.json();
+                setDailyLog([...dailyLog, ...newLogs]);
+            }
+        } catch (err) {
+            console.error("Failed to log food", err);
+        }
     };
 
-    const totalCalories = dailyLog.reduce((acc, item) => acc + item.calories, 0);
-    const totalProtein = dailyLog.reduce((acc, item) => acc + item.protein, 0);
-    const totalCarbs = dailyLog.reduce((acc, item) => acc + item.carbs, 0);
-    const totalFat = dailyLog.reduce((acc, item) => acc + item.fat, 0);
+    const removeLog = async (id) => {
+        try {
+            await fetch(`${API_URL}/api/nutrition/log/${id}`, { method: 'DELETE' });
+            setDailyLog(dailyLog.filter(item => item.id !== id));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const safeDailyLog = Array.isArray(dailyLog) ? dailyLog : [];
+
+    const totalCalories = safeDailyLog.reduce((acc, item) => acc + item.calories, 0);
+    const totalProtein = safeDailyLog.reduce((acc, item) => acc + item.protein, 0);
+    const totalCarbs = safeDailyLog.reduce((acc, item) => acc + item.carbs, 0);
+    const totalFat = safeDailyLog.reduce((acc, item) => acc + item.fat, 0);
 
     return (
         <div className="max-w-6xl mx-auto space-y-8">
@@ -156,16 +206,21 @@ const Nutrition = () => {
                         </div>
 
                         <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-                            {dailyLog.length === 0 ? (
+                            {!Array.isArray(dailyLog) || dailyLog.length === 0 ? (
                                 <div className="text-center text-muted py-8 italic">No food logged today</div>
                             ) : (
                                 dailyLog.map((item) => (
-                                    <div key={item.id} className="flex justify-between items-center text-sm p-2 border-b border-gray-50 last:border-0">
-                                        <div>
+                                    <div key={item.id} className="flex justify-between items-center text-sm p-2 border-b border-gray-50 last:border-0 group">
+                                        <div className="flex-1">
                                             <div className="font-medium truncate max-w-[150px]">{item.name}</div>
                                             <div className="text-xs text-muted">x{item.quantity}</div>
                                         </div>
-                                        <span className="font-bold text-muted">{item.calories}</span>
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-bold text-muted">{item.calories}</span>
+                                            <button onClick={() => removeLog(item.id)} className="text-gray-300 hover:text-bad transition opacity-0 group-hover:opacity-100">
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))
                             )}

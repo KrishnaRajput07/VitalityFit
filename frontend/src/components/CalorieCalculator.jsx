@@ -101,7 +101,13 @@ const CalorieCalculator = () => {
 
         setIsLogging(true);
         try {
-            const today = new Date().toISOString().split('T')[0];
+            // Use local date string YYYY-MM-DD to avoid timezone mismatches
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+
             let totalRepsOrMinutes;
 
             if (selectedExercise.unit === 'reps') {
@@ -115,7 +121,7 @@ const CalorieCalculator = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userId: user.id,
-                    date: today,
+                    date: dateStr, // Consistent local date
                     exerciseName: selectedExercise.name,
                     category: selectedExercise.category,
                     repsOrMinutes: totalRepsOrMinutes,
@@ -306,8 +312,8 @@ const CalorieCalculator = () => {
                                     onClick={handleLogActivity}
                                     disabled={isLogging || isLogged}
                                     className={`px-4 py-2 rounded-xl font-bold transition-all duration-300 flex items-center gap-2 transform hover:scale-105 active:scale-95 ${isLogged
-                                            ? 'bg-ok text-white shadow-lg shadow-ok/30'
-                                            : 'bg-secondary text-white hover:bg-secondary/90 shadow-md hover:shadow-lg'
+                                        ? 'bg-ok text-white shadow-lg shadow-ok/30'
+                                        : 'bg-pink text-white hover:bg-pink/90 shadow-md hover:shadow-lg'
                                         } disabled:opacity-50`}
                                 >
                                     {isLogged ? (
@@ -335,7 +341,7 @@ const CalorieCalculator = () => {
                     </h4>
                     <div className="bg-gradient-to-br from-secondary/10 to-primary/10 rounded-2xl p-8 border border-secondary/20 transition-all duration-300 hover:shadow-lg">
                         <div className="text-center mb-6">
-                            <div className={`text-6xl font-mono font-black text-secondary mb-2 transition-all duration-200 ${isRunning ? 'animate-pulse' : ''}`}>
+                            <div className={`text-5xl md:text-6xl font-mono font-black text-secondary mb-2 transition-all duration-200 text-center ${isRunning ? 'animate-pulse' : ''}`}>
                                 {formatTime(time)}
                             </div>
                             <p className="text-sm text-muted">Perfect for Plank, Wall Sit, etc.</p>
@@ -345,8 +351,8 @@ const CalorieCalculator = () => {
                             <button
                                 onClick={handleStartPause}
                                 className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center gap-2 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg ${isRunning
-                                        ? 'bg-warn text-white hover:bg-warn/90'
-                                        : 'bg-secondary text-white hover:bg-secondary/90'
+                                    ? 'bg-warn text-white hover:bg-warn/90'
+                                    : 'bg-pink text-white hover:bg-pink/90'
                                     }`}
                             >
                                 {isRunning ? (
